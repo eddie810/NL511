@@ -5,22 +5,16 @@
     <Folder>
       <name>Road Conditions</name>
       <name>NL 511 — Road Conditions</name>
-      <description>Exported 2026-03-09 22:59 from 511nl.ca</description>
-      <Style id="s_ff0000ff">
+      <description>Exported 2026-03-09 23:53 from 511nl.ca</description>
+      <Style id="s_ff0055ff">
         <LineStyle>
-          <color>ff0000ff</color>
+          <color>ff0055ff</color>
           <width>3</width>
         </LineStyle>
       </Style>
-      <Style id="s_ff44cc00">
+      <Style id="s_ff0000cc">
         <LineStyle>
-          <color>ff44cc00</color>
-          <width>3</width>
-        </LineStyle>
-      </Style>
-      <Style id="s_ff000000">
-        <LineStyle>
-          <color>ff000000</color>
+          <color>ff0000cc</color>
           <width>3</width>
         </LineStyle>
       </Style>
@@ -36,21 +30,27 @@
           <width>3</width>
         </LineStyle>
       </Style>
+      <Style id="s_ff000000">
+        <LineStyle>
+          <color>ff000000</color>
+          <width>3</width>
+        </LineStyle>
+      </Style>
+      <Style id="s_ff0000ff">
+        <LineStyle>
+          <color>ff0000ff</color>
+          <width>3</width>
+        </LineStyle>
+      </Style>
       <Style id="s_ff888888">
         <LineStyle>
           <color>ff888888</color>
           <width>3</width>
         </LineStyle>
       </Style>
-      <Style id="s_ff0055ff">
+      <Style id="s_ff44cc00">
         <LineStyle>
-          <color>ff0055ff</color>
-          <width>3</width>
-        </LineStyle>
-      </Style>
-      <Style id="s_ff0000cc">
-        <LineStyle>
-          <color>ff0000cc</color>
+          <color>ff44cc00</color>
           <width>3</width>
         </LineStyle>
       </Style>
@@ -1462,22 +1462,16 @@
     <Folder>
       <name>Events &amp; Incidents</name>
       <name>NL 511 — Events &amp; Incidents</name>
-      <description>Exported 2026-03-09 22:59 from 511nl.ca</description>
-      <Style id="s_ff0000ff">
+      <description>Exported 2026-03-09 23:53 from 511nl.ca</description>
+      <Style id="s_ff0055ff">
         <LineStyle>
-          <color>ff0000ff</color>
+          <color>ff0055ff</color>
           <width>3</width>
         </LineStyle>
       </Style>
-      <Style id="s_ff44cc00">
+      <Style id="s_ff0000cc">
         <LineStyle>
-          <color>ff44cc00</color>
-          <width>3</width>
-        </LineStyle>
-      </Style>
-      <Style id="s_ff000000">
-        <LineStyle>
-          <color>ff000000</color>
+          <color>ff0000cc</color>
           <width>3</width>
         </LineStyle>
       </Style>
@@ -1493,21 +1487,27 @@
           <width>3</width>
         </LineStyle>
       </Style>
+      <Style id="s_ff000000">
+        <LineStyle>
+          <color>ff000000</color>
+          <width>3</width>
+        </LineStyle>
+      </Style>
+      <Style id="s_ff0000ff">
+        <LineStyle>
+          <color>ff0000ff</color>
+          <width>3</width>
+        </LineStyle>
+      </Style>
       <Style id="s_ff888888">
         <LineStyle>
           <color>ff888888</color>
           <width>3</width>
         </LineStyle>
       </Style>
-      <Style id="s_ff0055ff">
+      <Style id="s_ff44cc00">
         <LineStyle>
-          <color>ff0055ff</color>
-          <width>3</width>
-        </LineStyle>
-      </Style>
-      <Style id="s_ff0000cc">
-        <LineStyle>
-          <color>ff0000cc</color>
+          <color>ff44cc00</color>
           <width>3</width>
         </LineStyle>
       </Style>
