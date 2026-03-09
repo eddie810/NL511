@@ -1,0 +1,157 @@
+﻿id,roadway_name,area,location_description,road_condition,secondary_conditions,visibility,last_updated
+129,HWY-210 Burin Peninsula Highway,Eastern-Boat Harbour,Red Harbour to Clam Brook,Bare Dry,,Good,2026-03-09 13:55:16
+132,HWY-212 Harbour Mille Road,Eastern-Boat Harbour,Intersection Route 210 to Bay L'Argent,Bare Dry,,Good,2026-03-09 13:55:16
+197,HWY-215 Petite Forte Road,Eastern-Boat Harbour,Boat Harbour to Petite Forte,Bare Dry,,Good,2026-03-09 13:55:16
+105,HWY-40 Portugal Cove Road,Avalon-Torbay,Windsor Lake to Beachy Cove Road,Bare Wet,,Good,2026-03-09 14:03:52
+106,HWY-41 Beachy Cove Road,Avalon-Torbay,Beachy Cove Road to St. Thomas Line,Bare Wet,,Good,2026-03-09 14:03:52
+107,HWY-50 Thorburn Road,Avalon-Torbay,St. John's City Limits to St. Thomas Line,Bare Wet,,Good,2026-03-09 14:03:52
+233,HWY-20 Torbay Road,Avalon-Torbay,Torbay to Pouch Cove,Bare Wet,,Good,2026-03-09 14:03:52
+234,HWY-20A Torbay Bypass Road,Avalon-Torbay,Torbay to Flatrock,Bare Wet,,Good,2026-03-09 14:03:52
+102,HWY-10 Southern Shore Highway,Avalon-Tors Cove,Goulds to Cape Broyle,Bare Dry,,Good,2026-03-09 14:05:49
+103,HWY-13 Witless Bay Line,Avalon-Tors Cove,Trans-Canada Highway to Witless Bay,Bare Dry,,Good,2026-03-09 14:05:49
+112,HWY-70 Baccalieu Trail,Avalon-Lower Island Cove,Perry's Cove to Old Perlican,Bare Dry,,Good,2026-03-09 14:08:26
+115,HWY-80 Trinity South Highway,Avalon-Lower Island Cove,Brownsdale to Old Perlican,Bare Dry,,Good,2026-03-09 14:08:26
+239,HWY-70 Baccalieu Trail,Avalon-Lower Island Cove,Old Perlican to Grate’s Cove,Bare Dry,,Good,2026-03-09 14:08:26
+187,HWY-510 Southern Labrador Highway,Labrador-Port Hope Simpson,Cartwright Junction to Port Hope Simpson,Bare Dry,Icy Patches,Good,2026-03-09 14:17:32
+188,HWY-510 Southern Labrador Highway,Labrador-Port Hope Simpson,Port Hope Simpson to Lodge Bay,Bare Dry,Icy Patches,Good,2026-03-09 14:17:33
+191,HWY-513 St. Lewis Road,Labrador-Port Hope Simpson,Intersection Route 510 to St. Lewis,Covered Snow Packed,Icy Patches,Good,2026-03-09 14:17:38
+215,HWY-514 Charlottetown Junction,Labrador-Port Hope Simpson,Intersection Route 510 to Charlottetown,Covered Snow Packed,Icy Patches,Good,2026-03-09 14:17:39
+223,HWY-514-1 Pinsent's Arm Road,Labrador-Port Hope Simpson,Intersection Route 514 to Pinsent's Arm,Covered Snow Packed,Icy Patches,Good,2026-03-09 14:17:39
+89,HWY-1 Trans-Canada Highway,Central-Springdale,South Brook to Birchy Narrows,Bare Wet,,Good,2026-03-09 14:19:55
+149,HWY-390 Springdale Road,Central-Springdale,Trans-Canada Highway to Springdale,Bare Wet,,Good,2026-03-09 14:19:55
+157,HWY-391 Harry's Harbour Road,Central-Springdale,King's Point to Harry's Harbour,Bare Wet,,Good,2026-03-09 14:19:55
+128,HWY-210 Burin Peninsula Highway,Eastern-Black Brook,Winterland to Red Harbour,Bare Dry,,Good,2026-03-09 14:24:12
+199,HWY-220 Grand Bank to Marystown,Eastern-Black Brook,Lord's Cove to Marystown,Bare Dry,,Good,2026-03-09 14:24:12
+91,HWY-1 Trans-Canada Highway,Western-Corner Brook,Corner Brook to Gallants,Bare Wet,,Good,2026-03-09 14:24:24
+220,HWY-450-1 Lewin Parkway,Western-Corner Brook,Intersection Route 450 to Trans-Canada Highway,Bare Wet,,Good,2026-03-09 14:24:25
+177,HWY-450 South Shore Highway,Western-Corner Brook,Lark Harbour to Corner Brook,Partly Covered Snow,,Good,2026-03-09 14:24:29
+127,HWY-210 Burin Peninsula Highway,Eastern-Grand Bank,Grand Bank to Winterland,Bare Dry,,Good,2026-03-09 14:25:09
+198,HWY-220 Grand Bank to Marystown,Eastern-Grand Bank,Grand Bank to Lord's Cove,Bare Dry,,Good,2026-03-09 14:25:09
+74,HWY-1 Trans-Canada Highway,Avalon-Donovan's,Logy Bay Road to Paddy's Pond,Bare Wet,,Good,2026-03-09 14:25:24
+99,HWY-2 Pitts Memorial/CBS Bypass,Avalon-Donovan's,New Gower Street to Trans-Canada Highway,Bare Wet,,Good,2026-03-09 14:25:24
+97,HWY-3 Robert E Howlett Memorial Drive,Avalon-Donovan's,Mt. Pearl to Goulds,Bare Wet,,Good,2026-03-09 14:25:24
+226,HWY-3A Team Gushue Highway,Avalon-Donovan's,Topsail Road to Outer Ring Road,Bare Wet,,Good,2026-03-09 14:25:24
+201,HWY-230 Bonavista Peninsula Highway,Eastern-Amherst Cove,Catalina to Bonavista,Bare Wet,,Good,2026-03-09 14:25:35
+202,HWY-235 Southern Bay to Cape Bonavista,Eastern-Amherst Cove,Open Hall to Bonavista,Bare Wet,,Good,2026-03-09 14:25:35
+166,HWY-430 Northern Peninsula Highway,Western-St. Anthony,St. Anthony Airport to St. Anthony,Partly Covered Snow,Slushy Patches,Good,2026-03-09 14:26:01
+209,HWY-430 Northern Peninsula Highway,Western-St. Anthony,St. Anthony to Goose Cove East,Partly Covered Snow,Slushy Patches,Good,2026-03-09 14:26:01
+219,HWY-430-34 St. Anthony Bight Road,Western-St. Anthony,Great Brehat Road to St. Anthony Bight,Partly Covered Snow,Slushy Patches,Good,2026-03-09 14:26:01
+221,HWY-430-75 St. Carol's Road,Western-St. Anthony,Great Brehat Road to St. Carol's,Partly Covered Snow,Slushy Patches,Good,2026-03-09 14:26:01
+222,HWY-430-76 Great Brehat Road,Western-St. Anthony,Intersection Route 430 to Great Brehat,Partly Covered Snow,Slushy Patches,Good,2026-03-09 14:26:01
+173,HWY-435 Cooks Harbour Road,Western-St. Anthony,Intersection Route 430 to Cook's Harbour,Partly Covered Snow,Slushy Patches,Good,2026-03-09 14:26:20
+174,HWY-436 L'anse Aux Meadows Road,Western-St. Anthony,Intersection Route 430 to L'anse aux Meadows,Partly Covered Snow,Slushy Patches,Good,2026-03-09 14:26:20
+175,HWY-437 Cape Onion Road,Western-St. Anthony,Intersection Route 430 to Cape Onion,Partly Covered Snow,Slushy Patches,Good,2026-03-09 14:26:20
+138,HWY-335 Farewell Road,Central-Victoria Cove,Stoneville to Fogo Island Ferry Terminal,Bare Wet,,Good,2026-03-09 14:26:38
+140,HWY-331 Victoria Cove Road,Central-Victoria Cove,Gander Bay South to Boyd's Cove,Bare Wet,,Good,2026-03-09 14:26:38
+203,HWY-330 Gander Bay Highway,Central-Victoria Cove,Gander to Carmanville,Bare Wet,,Good,2026-03-09 14:26:38
+216,HWY-480 Burgeo Highway,Western-Burgeo,Buchan's Resource Road to Burgeo,Bare Wet,,Good,2026-03-09 14:26:51
+111,HWY-70 Baccalieu Trail,Avalon-Heart's Content,Harbour Grace to Perry's Cove,Bare Dry,,Good,2026-03-09 14:30:41
+114,HWY-74 Hearts Content Barrens,Avalon-Heart's Content,Victoria to Hearts Content,Bare Dry,,Good,2026-03-09 14:30:41
+117,HWY-80 Trinity South Highway,Avalon-Heart's Content,Green's Harbour to Brownsdale,Bare Dry,,Good,2026-03-09 14:30:41
+83,HWY-1 Trans-Canada Highway,Eastern-Eastport,Park West Boundary to Gander,Bare Wet,,Good,2026-03-09 14:33:58
+135,HWY-310 Eastport Road,Eastern-Eastport,Eastport Park Boundary to Salvage,Bare Wet,,Good,2026-03-09 14:33:58
+217,HWY-310-32 Burnside Highway,Eastern-Eastport,Intersection 310 to Burnside,Bare Wet,,Good,2026-03-09 14:33:58
+130,HWY-210 Burin Peninsula Highway,Eastern-Grand Le Pierre,Clam Brook to Swift Current,Bare Wet,,Fair,2026-03-09 14:34:13
+78,HWY-1 Trans-Canada Highway,Avalon-Whitbourne,Roaches Line to Whitbourne,Bare Dry,,Good,2026-03-09 14:34:33
+123,HWY-100 Argentia Access Road,Avalon-Whitbourne,Trans Canada Highway to Intersection Route 101,Bare Dry,,Good,2026-03-09 14:34:33
+195,HWY-80 Trinity South Highway,Avalon-Whitbourne,Trans Canada Highway to Green's Harbour,Bare Dry,,Good,2026-03-09 14:34:33
+196,HWY-81 Markland Road,Avalon-Whitbourne,Trans Canada Highway to Markland,Bare Dry,,Good,2026-03-09 14:34:33
+236,HWY-360 Bay D'Espoir Highway,Central-Milltown,Berry Hill Brook to Intersection Route 362,Bare Dry,,Good,2026-03-09 14:35:44
+153,HWY-361 St. Alban's Road,Central-Milltown,Intersection Route 360 to St. Alban's,Bare Dry,,Good,2026-03-09 14:35:44
+205,HWY-365 Conne River Road,Central-Milltown,Intersection Route 360 to Conne River,Bare Dry,,Fair,2026-03-09 14:35:51
+76,HWY-1 Trans-Canada Highway,Avalon-Foxtrap,Paddy's Pond to Salmonier Line,Bare Dry,,Good,2026-03-09 14:36:08
+100,HWY-2 Pitts Memorial/CBS Bypass,Avalon-Foxtrap,Trans-Canada Highway to Seal Cove,Bare Dry,,Good,2026-03-09 14:36:08
+108,HWY-60 Conception Bay Highway,Avalon-Foxtrap,Topsail to Holyrood,Bare Dry,,Good,2026-03-09 14:36:08
+243,HWY-1 Trans-Canada Highway,Eastern-Goobies,Southern Harbour to Clarenville,Bare Dry,,Good,2026-03-09 14:36:25
+131,HWY-210 Burin Peninsula Highway,Eastern-Goobies,Swift Current to Trans-Canada Highway,Bare Dry,,Good,2026-03-09 14:36:25
+134,HWY-235 Southern Bay to Cape Bonavista,Eastern-Lethbridge,Southern Bay to Open Hall,Bare Wet,,Good,2026-03-09 14:36:36
+200,HWY-230 Bonavista Peninsula Highway,Eastern-Lethbridge,Trans-Canada Highway to Southern Bay,Bare Wet,,Good,2026-03-09 14:36:36
+141,HWY-333 Fogo Road,Central-Fogo Island,Stag Harbour to Fogo,Bare Wet,,Good,2026-03-09 14:36:44
+144,HWY-340 Road to the Isles,Central-New World Island,Boyd's Cove to Crow Head,Bare Wet,,Good,2026-03-09 14:36:55
+139,HWY-330 Gander Bay Highway,Central-Lumsden,Carmanville to New Wes Valley,Bare Wet,,Good,2026-03-09 14:37:06
+227,HWY-320 Bonavista North Highway,Central-Lumsden,Gambo to New Wes Valley,Bare Wet,,Good,2026-03-09 14:37:06
+159,HWY-410 Baie Verte Road,Central-Baie Verte,Trans-Canada Highway to Fleur de Lys,Bare Wet,,Good,2026-03-09 14:37:20
+206,HWY-414 La Scie Highway,Central-Baie Verte,Baie Verte to La Scie,Bare Wet,,Good,2026-03-09 14:37:20
+224,HWY-40-16 Bell Island Main Road,Avalon-Bell Island,Beach Hill Road to Wabana Town Square,Bare Wet,,Good,2026-03-09 14:37:35
+94,HWY-1 Trans-Canada Highway,Western-Steele Mountain,Gallants to Robinsons,Bare Wet,,Good,2026-03-09 14:37:46
+179,HWY-480 Burgeo Highway,Western-Steele Mountain,Trans-Canada Highway to Buchan's Resource Road,Bare Wet,,Good,2026-03-09 14:37:46
+161,HWY-420 Jackson's Arm Road,Western-Sop's Arm,Hampden Junction to Jackson's Arm,Bare Wet,Slushy Patches,Good,2026-03-09 14:38:02
+207,HWY-430 Northern Peninsula Highway,Western-Port Saunders,Cow Head to Daniel's Harbour,Partly Covered Snow,Slushy Patches,Good,2026-03-09 14:38:28
+208,HWY-430 Northern Peninsula Highway,Western-Port Saunders,Daniel's Harbour to Port Saunders,Partly Covered Snow,Slushy Patches,Good,2026-03-09 14:38:28
+163,HWY-430 Northern Peninsula Highway,Western-Port Saunders,Port Saunders to Plum Point,Partly Covered Snow,Slushy Patches,Good,2026-03-09 14:38:28
+86,HWY-1 Trans-Canada Highway,Central-Robert's Arm,Badger to South Brook,Bare Dry,,Good,2026-03-09 14:38:47
+156,HWY-380 Pilley's Island Road,Central-Robert's Arm,South Brook to Triton,Bare Wet,,Good,2026-03-09 14:38:49
+146,HWY-382 Long Island Tickle Road,Central-Robert's Arm,Intersection Route 380 to Long Island Ferry,Bare Wet,,Good,2026-03-09 14:38:50
+244,HWY-1 Trans-Canada Highway,Eastern-Clarenville,Clarenville to Park East Boundary,Bare Dry,,Good,2026-03-09 14:39:04
+186,HWY-230 Bonavista Peninsula Highway,Eastern-Clarenville,Intersection Random Island Road to Bonavista Peninsula Highway,Bare Dry,,Good,2026-03-09 14:39:04
+84,HWY-1 Trans-Canada Highway,Central-Lewisporte,Gander to Notre Dame Junction,Bare Dry,,Good,2026-03-09 14:39:18
+142,HWY-340 Road to the Isles,Central-Lewisporte,Notre Dame Junction to Boyd's Cove,Bare Dry,,Good,2026-03-09 14:39:18
+189,HWY-510 Southern Labrador Highway,Labrador-L'Anse Au Loup,Lodge Bay to Red Bay,Partly Covered Snow,Icy Patches | Slushy Patches,Good,2026-03-09 14:39:34
+190,HWY-510 Southern Labrador Highway,Labrador-L'Anse Au Loup,Red Bay to Pinware,Bare Wet,Icy Patches | Slushy Patches,Good,2026-03-09 14:39:48
+225,HWY-510 Southern Labrador Highway,Labrador-L'Anse Au Loup,Pinware to Quebec Border,Bare Wet,Icy Patches | Slushy Patches,Good,2026-03-09 14:39:48
+95,HWY-1 Trans-Canada Highway,Western-Doyles,North Branch to Tompkins,Bare Wet,,Good,2026-03-09 14:40:02
+122,HWY-92 North Harbour Road,Avalon-St. Bride's,Branch to North Harbour,Bare Wet,,Poor,2026-03-09 14:40:14
+124,HWY-100 Argentia Access Road,Avalon-St. Bride's,Placentia to Branch,Bare Wet,,Poor,2026-03-09 14:40:14
+110,HWY-70 Baccalieu Trail,Avalon-Bay Roberts,Intersection Route 60 to Harbour Grace,Bare Dry,,Good,2026-03-09 14:42:05
+113,HWY-73 New Harbour Barrens,Avalon-Bay Roberts,Tilton to New Harbour,Bare Dry,,Good,2026-03-09 14:42:05
+116,HWY-75 Veterans Memorial,Avalon-Bay Roberts,Trans-Canada Highway to Harbour Grace,Bare Dry,,Good,2026-03-09 14:42:05
+87,HWY-1 Trans-Canada Highway,Western-Deer Lake,Deer Lake to Pasadena,Bare Wet,,Good,2026-03-09 14:42:31
+90,HWY-1 Trans-Canada Highway,Western-Deer Lake,Birchy Narrows to Deer Lake,Bare Wet,,Good,2026-03-09 14:42:31
+152,HWY-430 Northern Peninsula Highway,Western-Deer Lake,Deer Lake to Wiltondale,Bare Wet,,Good,2026-03-09 14:42:31
+158,HWY-401 Howley Road,Western-Deer Lake,Trans-Canada Highway to Howley,Bare Wet,,Good,2026-03-09 14:42:31
+194,HWY-10 Southern Shore Highway,Avalon-St. Joseph's,Chance Cove Park to Peter's River,Bare Dry,,Good,2026-03-09 14:43:32
+119,HWY-90 Salmonier Line,Avalon-St. Joseph's,Peter's River to St. Joseph's,Bare Dry,,Good,2026-03-09 14:43:32
+120,HWY-90 Salmonier Line,Avalon-St. Joseph's,St. Joseph's to Trans-Canada Highway,Bare Dry,,Good,2026-03-09 14:43:32
+121,HWY-91 Old Placentia Bay Highway,Avalon-St. Joseph's,St. Catherine's to North Harbour,Bare Dry,,Good,2026-03-09 14:43:32
+118,HWY-81 Markland Road,Avalon-St. Joseph's,Markland to Colinet,Bare Dry,,Good,2026-03-09 14:43:32
+164,HWY-430 Northern Peninsula Highway,Western-Flower's Cove,Plum Point to Flower's Cove,Bare Wet,Slushy Patches,Good,2026-03-09 14:43:52
+165,HWY-430 Northern Peninsula Highway,Western-Flower's Cove,Flower's Cove to St. Anthony Airport,Partly Covered Snow,Slushy Patches,Good,2026-03-09 14:44:06
+218,HWY-430-50 St. Barbe Ferry Road,Western-Flower's Cove,Intersection Route 430 to St. Barbe,Partly Covered Snow,Slushy Patches,Good,2026-03-09 14:44:06
+77,HWY-1 Trans-Canada Highway,Avalon-Avondale,Salmonier Line to Roaches Line,Bare Dry,,Good,2026-03-09 14:44:20
+109,HWY-60 Conception Bay Highway,Avalon-Avondale,Holyrood to Roaches Line,Bare Dry,,Good,2026-03-09 14:44:20
+75,HWY-1 Trans-Canada Highway,Central-Bishop's Falls,Grand Falls-Windsor to Badger,Bare Wet,,Good,2026-03-09 14:45:37
+85,HWY-1 Trans-Canada Highway,Central-Bishop's Falls,Notre Dame Junction to Grand Falls-Windsor,Bare Wet,,Good,2026-03-09 14:45:37
+148,HWY-360 Bay D'Espoir Highway,Central-Bishop's Falls,Trans-Canada Highway to Berry Hill Brook,Bare Wet,,Good,2026-03-09 14:45:37
+155,HWY-370 Buchans Highway,Central-Bishop's Falls,Badger to Buchans,Bare Wet,,Good,2026-03-09 14:45:37
+169,HWY-432 Main Brook Highway,Western-Roddickton,St. Anthony Airport to Roddickton,Bare Wet,Slushy Patches,Good,2026-03-09 14:46:03
+170,HWY-432 Main Brook Highway,Western-Roddickton,Roddickton to Plum Point,Bare Wet,Slushy Patches,Good,2026-03-09 14:46:03
+211,HWY-433 Englee Road,Western-Roddickton,Roddickton to Englee,Bare Wet,Slushy Patches,Good,2026-03-09 14:46:03
+171,HWY-500 Trans-Labrador Highway,Labrador-Goose Bay,Happy Valley Goose Bay to Cache River Depot,Partly Covered Snow Packed,Icy Patches | Slushy Patches,Good,2026-03-09 14:46:22
+172,HWY-500 Trans-Labrador Highway,Labrador-Goose Bay,Cache River Depot to Churchills Falls,Partly Covered Snow Packed,Icy Patches | Slushy Patches,Good,2026-03-09 14:46:23
+231,HWY-520 North West River Road,Labrador-Goose Bay,Happy Valley-Goose Bay to North West River,Bare Wet,Icy Patches | Slushy Patches,Good,2026-03-09 14:46:27
+93,HWY-1 Trans-Canada Highway,Western-Robinsons,Robinsons to North Branch,Bare Wet,,Good,2026-03-09 14:46:42
+96,HWY-1 Trans-Canada Highway,Western-Port aux Basques,Tompkins to Cape Ray,Bare Wet,,Good,2026-03-09 14:50:21
+98,HWY-1 Trans-Canada Highway,Western-Port aux Basques,Cape Ray to Port aux Basques,Bare Wet,,Good,2026-03-09 14:50:21
+214,HWY-470 Lapoile Highway,Western-Port aux Basques,Port aux Basques to Rose Blanche,Bare Wet,,Good,2026-03-09 14:50:21
+79,HWY-1 Trans-Canada Highway,Eastern-Bellevue,Whitbourne to Southern Harbour,Bare Dry,,Good,2026-03-09 14:50:42
+125,HWY-100 Argentia Access Road,Avalon-Placentia,Intersection Route 101 to Placentia,Bare Dry,,Good,2026-03-09 14:51:06
+126,HWY-101 Long Harbour Road,Avalon-Placentia,Intersection of Route 100 to Long Harbour,Bare Dry,,Good,2026-03-09 14:51:06
+88,HWY-1 Trans-Canada Highway,Western-Wild Cove,Pasadena to Steady Brook,Bare Wet,,Good,2026-03-09 14:57:32
+92,HWY-1 Trans-Canada Highway,Western-Wild Cove,Steady Brook to Corner Brook,Bare Wet,,Good,2026-03-09 14:57:32
+176,HWY-440 North Shore Highway,Western-Wild Cove,Cox's Cove to Trans-Canada Highway,Bare Wet,,Good,2026-03-09 14:57:32
+181,HWY-500 Trans-Labrador Highway,Labrador-Labrador City,Churchills Falls to Ranger Lake Depot,Covered Snow Packed,Icy Patches | Slushy Patches,Good,2026-03-09 14:57:54
+182,HWY-500 Trans-Labrador Highway,Labrador-Labrador City,Ranger Lake Depot to Wabush,Covered Snow Packed,Icy Patches | Slushy Patches,Good,2026-03-09 14:57:54
+212,HWY-500 Trans-Labrador Highway,Labrador-Labrador City,Wabush to Quebec Border,Partly Covered Snow Packed,Icy Patches | Slushy Patches,Good,2026-03-09 14:58:02
+183,HWY-510 Southern Labrador Highway,Labrador-Crooke's Lake,Happy Valley Goose Bay to Kenamu River,Bare Wet,Icy Patches,Good,2026-03-09 14:58:39
+184,HWY-510 Southern Labrador Highway,Labrador-Crooke's Lake,Kenamu River to Crooke's Lake Depot,Bare Wet,Icy Patches,Good,2026-03-09 14:58:39
+185,HWY-510 Southern Labrador Highway,Labrador-Crooke's Lake,Crooke's Lake Depot to Cartwright Junction,Bare Wet,Icy Patches,Good,2026-03-09 14:58:39
+180,HWY-516 Cartwright Access Road,Labrador-Crooke's Lake,Cartwright Junction to Cartwright,Covered Snow Packed,Icy Patches,Good,2026-03-09 14:58:43
+101,HWY-10 Southern Shore Highway,Avalon-Renews,Cape Broyle to Chance Cove Park,Bare Dry,,Good,2026-03-09 14:58:55
+133,HWY-230 Bonavista Peninsula Highway,Eastern-Port Rexton,Southern Bay to Catalina,Bare Dry,,Good,2026-03-09 15:00:57
+162,HWY-430 Northern Peninsula Highway,Western-Rocky Harbour/Glenburnie,Wiltondale to Rocky Harbour,Bare Wet,Slushy Patches,Good,2026-03-09 15:08:06
+160,HWY-430 Northern Peninsula Highway,Western-Rocky Harbour/Glenburnie,Rocky Harbour to Cow Head,Bare Wet,Slushy Patches,Good,2026-03-09 15:08:06
+238,HWY-431 Bonne Bay Road,Western-Rocky Harbour/Glenburnie,Wiltondale to Woody Point,Bare Wet,Slushy Patches,Good,2026-03-09 15:08:06
+237,HWY-431 Bonne Bay Road,Western-Rocky Harbour/Glenburnie,Woody Point to Trout River,Bare Wet,Slushy Patches,Good,2026-03-09 15:08:06
+82,HWY-1 Trans-Canada Highway,Eastern-TNNP,Park East Boundary to Park West Boundary,Bare Dry,,Good,2026-03-09 15:13:23
+136,HWY-310 Eastport Road,Eastern-TNNP,Eastport Junction to Eastport Park Boundary,Bare Dry,,Good,2026-03-09 15:13:23
+167,HWY-460 Port au Port Highway,Western-Stephenville,Trans-Canada Highway to Cold Brook,Bare Wet,,Good,2026-03-09 15:16:37
+213,HWY-460 Port au Port Highway,Western-Stephenville,Cold Brook to Cape St. George,Bare Wet,,Good,2026-03-09 15:16:37
+210,HWY-490 Stephenville Access Road,Western-Stephenville,Intersection Trans-Canada Highway to Intersection Route 460,Bare Wet,,Good,2026-03-09 15:16:37
+229,HWY-463 Cape St. George Highway,Western-Abraham's Cove,Abrahams Cove to Mainland,Bare Wet,,Good,2026-03-09 15:16:55
+230,HWY-463 Cape St. George Highway,Western-Abraham's Cove,Mainland to Cape St. George,Bare Wet,,Good,2026-03-09 15:16:55
+235,HWY-360 Bay D'Espoir Highway,Central-Pool's Cove,Intersection Route 362 to Harbour Breton,Bare Dry,,Good,2026-03-09 15:19:43
+204,HWY-362 Belleoram Road,Central-Pool's Cove,Intersection Route 360 to Belleoram,Bare Dry,,Good,2026-03-09 15:19:43
+154,HWY-364 Seal Cove Road,Central-Pool's Cove,Intersection Route 360 to Seal Cove,Bare Dry,,Good,2026-03-09 15:19:43
+143,HWY-350 Botwood Highway,Central-Northern Arm,Trans Canada Highway to Northern Arm,Bare Wet,,Good,2026-03-09 15:43:49
+145,HWY-350 Botwood Highway,Central-Northern Arm,Northern Arm to Leading Tickles,Bare Wet,,Good,2026-03-09 15:43:49
+147,HWY-352 Fortune Harbour Road,Central-Northern Arm,Northern Arm to Fortune Harbour,Bare Wet,,Good,2026-03-09 15:43:49

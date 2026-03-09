@@ -1,0 +1,33 @@
+name: NL511 Hourly Update
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests pandas openpyxl
+
+      - name: Run NL511 extractor
+        env:
+          NL511_API_KEY: ${{ secrets.NL511_API_KEY }}
+        run: python nl511_extract.py
+
+      - name: Commit updated files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add nl511_roads.kml nl511_data.xlsx nl511_road_conditions.csv nl511_events.csv
+          git diff --staged --quiet || git commit -m "Auto-update NL511 data $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push

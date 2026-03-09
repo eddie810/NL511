@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/es/Code/Claude Code/ROADS/COTRIP/**)",
+      "Bash(python3 cotrip_extract.py)"
+    ]
+  }
+}
