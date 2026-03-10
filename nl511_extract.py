@@ -71,15 +71,13 @@ def decode_polyline(encoded: str) -> list:
 # KML colour map — AABBGGRR format (KML uses BGR, not RGB)
 # Keyed on substrings that appear in the road_condition value (case-insensitive)
 CONDITION_COLOURS = {
-    "closed":               "ff0000ff",   # red      — most specific first
-    "partly covered":       "ff00aaff",   # amber    — must come before "covered"
-    "covered snow packed":  "ff0055ff",   # orange
-    "compact snow":         "ff00ccff",   # yellow
-    "icy":                  "ff0000cc",   # dark red
-    "bare wet":             "ff44cc00",   # lime green
-    "bare dry":             "ff000000",   # black
+    "closed":               "ff000000",   # black        — closed
+    "travel not":           "ff00aaff",   # yellow/orange — travel not recommended
+    "partly covered":       "ffb0a0ff",   # pink          — partly covered snow
+    "covered":              "ffffff00",   # cyan          — covered snow packed
+    "bare":                 "ff000000",   # black         — bare dry / bare wet
 }
-DEFAULT_COLOUR = "ff888888"   # grey for anything unrecognised
+DEFAULT_COLOUR = "ff505050"   # dark gray for no report / unrecognised
 
 
 def condition_colour(condition: str) -> str:
