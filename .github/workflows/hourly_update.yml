@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -34,4 +36,5 @@ jobs:
           git add -f nl511_roads.kml nl511_data.xlsx || true
           git add -f nl511_road_conditions.csv nl511_events.csv || true
           git diff --staged --quiet || git commit -m "Auto-update NL511 data $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git pull --rebase
           git push
