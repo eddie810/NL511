@@ -33,8 +33,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f nl511_roads.kml nl511_data.xlsx || true
-          git add -f nl511_road_conditions.csv nl511_events.csv || true
+          git add -A nl511_roads.kml nl511_data.xlsx nl511_road_conditions.csv nl511_events.csv
           git diff --staged --quiet || git commit -m "Auto-update NL511 data $(date -u '+%Y-%m-%d %H:%M UTC')"
-          git pull --rebase
+          git pull --rebase --autostash
           git push
