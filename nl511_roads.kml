@@ -5,7 +5,19 @@
     <Folder>
       <name>Road Conditions</name>
       <name>NL 511 — Road Conditions</name>
-      <description>Exported 2026-03-10 17:27 from 511nl.ca</description>
+      <description>Exported 2026-03-10 17:35 from 511nl.ca</description>
+      <Style id="s_ff505050">
+        <LineStyle>
+          <color>ff505050</color>
+          <width>3</width>
+        </LineStyle>
+      </Style>
+      <Style id="s_ff000000">
+        <LineStyle>
+          <color>ff000000</color>
+          <width>3</width>
+        </LineStyle>
+      </Style>
       <Style id="s_ffb0a0ff">
         <LineStyle>
           <color>ffb0a0ff</color>
@@ -21,18 +33,6 @@
       <Style id="s_ffffff00">
         <LineStyle>
           <color>ffffff00</color>
-          <width>3</width>
-        </LineStyle>
-      </Style>
-      <Style id="s_ff505050">
-        <LineStyle>
-          <color>ff505050</color>
-          <width>3</width>
-        </LineStyle>
-      </Style>
-      <Style id="s_ff000000">
-        <LineStyle>
-          <color>ff000000</color>
           <width>3</width>
         </LineStyle>
       </Style>
@@ -1444,7 +1444,19 @@
     <Folder>
       <name>Events &amp; Incidents</name>
       <name>NL 511 — Events &amp; Incidents</name>
-      <description>Exported 2026-03-10 17:27 from 511nl.ca</description>
+      <description>Exported 2026-03-10 17:35 from 511nl.ca</description>
+      <Style id="s_ff505050">
+        <LineStyle>
+          <color>ff505050</color>
+          <width>3</width>
+        </LineStyle>
+      </Style>
+      <Style id="s_ff000000">
+        <LineStyle>
+          <color>ff000000</color>
+          <width>3</width>
+        </LineStyle>
+      </Style>
       <Style id="s_ffb0a0ff">
         <LineStyle>
           <color>ffb0a0ff</color>
@@ -1460,18 +1472,6 @@
       <Style id="s_ffffff00">
         <LineStyle>
           <color>ffffff00</color>
-          <width>3</width>
-        </LineStyle>
-      </Style>
-      <Style id="s_ff505050">
-        <LineStyle>
-          <color>ff505050</color>
-          <width>3</width>
-        </LineStyle>
-      </Style>
-      <Style id="s_ff000000">
-        <LineStyle>
-          <color>ff000000</color>
           <width>3</width>
         </LineStyle>
       </Style>
