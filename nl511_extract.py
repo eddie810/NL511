@@ -149,7 +149,7 @@ def build_kml(df_main: pd.DataFrame, df_poly: pd.DataFrame, label: str) -> ET.El
         ]
         if "secondary_conditions" in row and row["secondary_conditions"]:
             desc_lines.insert(1, f"<b>Secondary:</b> {row['secondary_conditions']}")
-        ET.SubElement(placemark, "description").text = "<br/>".join(desc_lines)
+        ET.SubElement(placemark, "description").text = "<![CDATA[" + "<br/>".join(desc_lines) + "]]>"
 
         linestring = ET.SubElement(placemark, "LineString")
         ET.SubElement(linestring, "tessellate").text = "1"
