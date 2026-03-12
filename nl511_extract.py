@@ -1,53 +1,54 @@
 """
-NL 511 Road Conditions & Events Extractor
-==========================================
-Fetches road conditions (winter roads) and traffic events from the
-511nl.ca API (IBI511 platform) and exports to CSV, Excel, and KML.
+nl511_extract.py
+Fetches road conditions and traffic events from the 511NL (511nl.ca) API,
+exports to CSV, Excel, and KML.
 
-SETUP:
-  pip install requests pandas openpyxl
+Usage:
+    python3 nl511_extract.py
 
-USAGE:
-  python nl511_extract.py
-
-OUTPUT:
-  nl511_road_conditions.csv
-  nl511_events.csv
-  nl511_data.xlsx         (both datasets as separate sheets)
-  nl511_roads.kml         (colour-coded map, open in Google Earth / Maps)
+Dependencies:
+    pip3 install requests pandas openpyxl --break-system-packages
 """
 
 import requests
 import pandas as pd
-import json
-import sys
-import os
+import openpyxl
+from openpyxl.styles import PatternFill, Font, Alignment
+from openpyxl.utils import get_column_letter
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
-from datetime import datetime
+from datetime import datetime, timezone
+import sys
 
-# ─────────────────────────────────────────────
-#  CONFIGURATION — paste your API key here
-# ─────────────────────────────────────────────
-API_KEY = os.environ.get("NL511_API_KEY", "")          # <-- replace with your key
-BASE_URL = "https://511nl.ca/api/v2/get"
+# ── Configuration ────────────────────────────────────────────────────────────
+API_KEY   = "002e66c43dd1491abe476df3e2bf034f"          # ← replace with your 511NL API key
+BASE_URL  = "https://511nl.ca/api/v2"
 
-# Output file paths (saved alongside this script)
-SCRIPT_DIR   = os.path.dirname(os.path.abspath(__file__))
-OUT_EXCEL    = os.path.join(SCRIPT_DIR, "nl511_data.xlsx")
-OUT_COND_CSV = os.path.join(SCRIPT_DIR, "nl511_road_conditions.csv")
-OUT_EVT_CSV  = os.path.join(SCRIPT_DIR, "nl511_events.csv")
-OUT_KML      = os.path.join(SCRIPT_DIR, "nl511_roads.kml")
+OUT_CSV_CONDITIONS = "nl511_road_conditions.csv"
+OUT_CSV_EVENTS     = "nl511_events.csv"
+OUT_XLSX           = "nl511_data.xlsx"
+OUT_KML            = "nl511_roads.kml"
 
-# ─────────────────────────────────────────────
-#  KML / POLYLINE HELPERS
-# ─────────────────────────────────────────────
+# ── Colour map (KML AABBGGRR) ─────────────────────────────────────────────
+# Colours match the official NL511 legend exactly.
+# KML format is AABBGGRR (Alpha, Blue, Green, Red — reversed vs HTML).
+# Order matters: more-specific substrings must come before broader ones.
+CONDITION_COLOURS = {
+    "closed":                   "ff0000ff",   # red     (#FF0000)
+    "travel not recommended":   "ff00d7ff",   # yellow  (#FFD700)
+    "partly covered":           "ffcc99cc",   # mauve   (#CC99CC) — before "covered"
+    "covered":                  "ffffff00",   # cyan    (#00FFFF) — catches "covered snow packed" etc.
+    "compact snow":             "ffffff00",   # cyan    (#00FFFF)
+    "bare wet":                 "ff000000",   # black
+    "bare dry":                 "ff000000",   # black
+    "poor visibility":          "ffffffff",   # white   (legend shows dashed — KML approximation)
+}
+DEFAULT_COLOUR = "ff888888"              # grey (No Report)
 
+
+# ── Polyline decoder ─────────────────────────────────────────────────────────
 def decode_polyline(encoded: str) -> list:
-    """
-    Decode a Google Maps encoded polyline string into a list of (lat, lng) tuples.
-    Pure Python — no extra library needed.
-    """
+    """Decode a Google Maps encoded polyline into a list of (lat, lng) tuples."""
     coords, index, lat, lng = [], 0, 0, 0
     while index < len(encoded):
         for is_lng in (False, True):
@@ -68,436 +69,354 @@ def decode_polyline(encoded: str) -> list:
     return coords
 
 
-# KML colour map — AABBGGRR format (KML uses BGR, not RGB)
-# Keyed on substrings that appear in the road_condition value (case-insensitive)
-CONDITION_COLOURS = {
-    "closed":               "ff000000",   # black        — closed
-    "travel not":           "ff00aaff",   # yellow/orange — travel not recommended
-    "partly covered":       "ffb0a0ff",   # pink          — partly covered snow
-    "covered":              "ffffff00",   # cyan          — covered snow packed
-    "bare":                 "ff000000",   # black         — bare dry / bare wet
-}
-DEFAULT_COLOUR = "ff505050"   # dark gray for no report / unrecognised
-
-
+# ── Colour lookup ─────────────────────────────────────────────────────────────
 def condition_colour(condition: str) -> str:
+    """Return the KML colour for a given condition string."""
     if not condition:
         return DEFAULT_COLOUR
     lower = condition.lower()
-    for keyword, colour in CONDITION_COLOURS.items():
-        if keyword in lower:
+    for key, colour in CONDITION_COLOURS.items():
+        if key in lower:
             return colour
     return DEFAULT_COLOUR
 
 
-def build_kml(df_main: pd.DataFrame, df_poly: pd.DataFrame, label: str) -> ET.Element:
+# ── API fetch ─────────────────────────────────────────────────────────────────
+def fetch(endpoint: str) -> list:
     """
-    Build a KML <Document> element from a main dataframe and its polyline dataframe.
-    Segments are colour-coded by road_condition (or event_type for events).
+    Fetch JSON from the 511NL API.
+    Tries v2 first; falls back to v3 if needed.
+    Returns a list of raw dicts (empty list on failure).
     """
-    doc = ET.Element("Document")
-    ET.SubElement(doc, "name").text = f"NL 511 — {label}"
-    ET.SubElement(doc, "description").text = (
-        f"Exported {datetime.now().strftime('%Y-%m-%d %H:%M')} from 511nl.ca"
-    )
-
-    # Write one Style per unique colour so the KML stays small
-    used_colours = set(CONDITION_COLOURS.values()) | {DEFAULT_COLOUR}
-    for colour in used_colours:
-        style = ET.SubElement(doc, "Style", id=f"s_{colour}")
-        line  = ET.SubElement(style, "LineStyle")
-        ET.SubElement(line, "color").text = colour
-        ET.SubElement(line, "width").text = "3"
-
-    # Merge main data with polylines on id
-    if df_poly.empty or "encoded_polyline" not in df_poly.columns:
-        return doc
-
-    merged = df_main.merge(df_poly, on="id", how="inner")
-
-    condition_col = "road_condition" if "road_condition" in merged.columns else "event_type"
-
-    for _, row in merged.iterrows():
-        encoded = row.get("encoded_polyline", "")
-        if not encoded:
-            continue
-
-        coords = decode_polyline(str(encoded))
-        if not coords:
-            continue
-
-        condition  = str(row.get(condition_col, "") or "")
-        colour     = condition_colour(condition)
-        area       = str(row.get("area", "") or "")
-        location   = str(row.get("location_description", "") or "")
-        roadway    = str(row.get("roadway_name", "") or "")
-        visibility = str(row.get("visibility", "") or "")
-        updated    = str(row.get("last_updated", "") or "")
-
-        placemark = ET.SubElement(doc, "Placemark")
-        ET.SubElement(placemark, "name").text = roadway or location
-        ET.SubElement(placemark, "styleUrl").text = f"#s_{colour}"
-
-        desc_lines = [
-            f"<b>Condition:</b> {condition}",
-            f"<b>Visibility:</b> {visibility}",
-            f"<b>Location:</b> {location}",
-            f"<b>Area:</b> {area}",
-            f"<b>Updated:</b> {updated}",
-        ]
-        if "secondary_conditions" in row and row["secondary_conditions"]:
-            desc_lines.insert(1, f"<b>Secondary:</b> {row['secondary_conditions']}")
-        ET.SubElement(placemark, "description").text = "<![CDATA[" + "<br/>".join(desc_lines) + "]]>"
-
-        linestring = ET.SubElement(placemark, "LineString")
-        ET.SubElement(linestring, "tessellate").text = "1"
-        ET.SubElement(linestring, "coordinates").text = " ".join(
-            f"{lng},{lat},0" for lat, lng in coords
-        )
-
-    return doc
-
-
-def export_kml(df_cond, df_cond_poly, df_evt, df_evt_poly):
-    """Write a single KML file with road conditions and events as separate folders."""
-    kml_root = ET.Element("kml", xmlns="http://www.opengis.net/kml/2.2")
-    master   = ET.SubElement(kml_root, "Document")
-    ET.SubElement(master, "name").text = "NL 511 Road Data"
-
-    # Roads folder
-    roads_folder = ET.SubElement(master, "Folder")
-    ET.SubElement(roads_folder, "name").text = "Road Conditions"
-    roads_doc = build_kml(df_cond, df_cond_poly, "Road Conditions")
-    for child in list(roads_doc):
-        roads_folder.append(child)
-
-    # Events folder
-    events_folder = ET.SubElement(master, "Folder")
-    ET.SubElement(events_folder, "name").text = "Events & Incidents"
-    events_doc = build_kml(df_evt, df_evt_poly, "Events & Incidents")
-    for child in list(events_doc):
-        events_folder.append(child)
-
-    # Pretty-print
-    raw = ET.tostring(kml_root, encoding="unicode")
-    pretty = minidom.parseString(raw).toprettyxml(indent="  ", encoding="utf-8")
-    with open(OUT_KML, "wb") as f:
-        f.write(pretty)
-    print(f"  ✔  KML map              → {OUT_KML}")
-
-# ─────────────────────────────────────────────
-#  API HELPERS
-# ─────────────────────────────────────────────
-
-def fetch(endpoint: str, extra_params: dict = None) -> list:
-    """
-    Fetch a JSON list from a 511nl.ca endpoint.
-    Tries v2 first, falls back to v3 if 404.
-    """
-    params = {"key": API_KEY}
-    if extra_params:
-        params.update(extra_params)
-
-    for version in ["v2", "v3"]:
+    for version in ("v2", "v3"):
         url = f"https://511nl.ca/api/{version}/get/{endpoint}"
         try:
-            resp = requests.get(url, params=params, timeout=30)
+            resp = requests.get(url, params={"key": API_KEY}, timeout=30)
             if resp.status_code == 200:
                 data = resp.json()
-                # Some endpoints wrap in a list, some return dict; normalise
                 if isinstance(data, list):
                     return data
                 if isinstance(data, dict):
-                    # Look for a list inside common wrapper keys
-                    for key in ("Items", "items", "results", "data"):
-                        if key in data and isinstance(data[key], list):
-                            return data[key]
-                    return [data]
-            elif resp.status_code == 404:
-                continue          # try next version
-            elif resp.status_code == 401:
-                print(f"[ERROR] 401 Unauthorized — check your API key.")
-                sys.exit(1)
-            else:
-                print(f"[WARN]  {url} → HTTP {resp.status_code}")
-        except requests.exceptions.RequestException as e:
-            print(f"[ERROR] Could not reach {url}: {e}")
+                    # some endpoints wrap in a key
+                    for v in data.values():
+                        if isinstance(v, list):
+                            return v
+            print(f"  [{version}] HTTP {resp.status_code} for {endpoint}")
+        except Exception as exc:
+            print(f"  [{version}] Error fetching {endpoint}: {exc}")
     return []
 
 
-# ─────────────────────────────────────────────
-#  ROAD CONDITIONS (WINTER ROADS)
-# ─────────────────────────────────────────────
-
+# ── Normalisation ─────────────────────────────────────────────────────────────
 def normalise_condition(raw: dict) -> dict:
-    """Flatten one road-condition record into a clean dict."""
+    """Map a raw winterroads API record to a clean flat dict."""
     def get(*keys):
-        """Try multiple key variants (camelCase, PascalCase, hyphenated)."""
         for k in keys:
-            if k in raw:
+            if k in raw and raw[k] not in (None, ""):
                 return raw[k]
         return None
 
-    # Field names confirmed from NL511 API docs (note spaces in multi-word names)
-    secondary = get("Secondary Conditions", "SecondaryConditions",
-                    "Secondary-Conditions", "secondaryConditions")
-    if isinstance(secondary, list):
-        secondary = " | ".join(str(s) for s in secondary if s)
-    elif secondary == []:
-        secondary = None
-
-    last_updated_raw = get("LastUpdated", "lastUpdated", "UpdatedAt", "updated_at")
-    last_updated = parse_timestamp(last_updated_raw)
-
-    # "Primary Condition" and "Visibility" are two distinct fields per the API docs.
-    # Primary Condition = road surface condition (e.g. Bare & Dry, Compact Snow)
-    # Visibility        = driving visibility rating (e.g. Good, Fair)
-    road_condition = get("Primary Condition", "PrimaryCondition",
-                         "Primary-Condition", "primaryCondition")
-    visibility     = get("Visibility", "visibility")
-
     return {
-        "id":                  get("Id", "id"),
-        "roadway_name":        get("RoadwayName", "Roadway", "roadwayName"),
-        "area":                get("AreaName", "Area", "areaName"),
-        "location_description":get("LocationDescription", "Description", "locationDescription"),
-        "road_condition":      road_condition,
-        "secondary_conditions":secondary,
-        "visibility":          visibility,
-        "last_updated":        last_updated,
-        # Polyline stored separately — excluded from main sheets to keep output readable
-        "_encoded_polyline":   get("EncodedPolyline", "encodedPolyline", "Polyline"),
+        "id":                    str(get("Id", "ID", "id") or ""),
+        "roadway_name":          get("RoadwayName", "Roadway Name", "roadwayName", "roadway_name"),
+        "location_description":  get("LocationDescription", "Location Description",
+                                     "locationDescription", "location_description"),
+        "from_measure":          get("FromMeasure", "From Measure", "fromMeasure"),
+        "to_measure":            get("ToMeasure",   "To Measure",   "toMeasure"),
+        "direction":             get("Direction",   "direction"),
+        "road_condition":        get("Primary Condition", "PrimaryCondition",
+                                     "Primary-Condition",  "primaryCondition",
+                                     "RoadCondition",      "road_condition"),
+        "secondary_conditions":  get("Secondary Conditions", "SecondaryConditions",
+                                     "Secondary-Conditions", "secondaryConditions"),
+        "visibility":            get("Visibility",  "visibility"),
+        "last_updated":          get("LastUpdated", "Last Updated", "lastUpdated",
+                                     "UpdatedAt",   "updatedAt"),
+        "_encoded_polyline":     get("EncodedPolyline", "Encoded Polyline",
+                                     "encodedPolyline", "encoded_polyline",
+                                     "polyline", "Polyline"),
     }
 
-
-# ─────────────────────────────────────────────
-#  EVENTS / INCIDENTS
-# ─────────────────────────────────────────────
 
 def normalise_event(raw: dict) -> dict:
-    """Flatten one event/incident record into a clean dict."""
+    """Map a raw events API record to a clean flat dict."""
     def get(*keys):
         for k in keys:
-            if k in raw:
+            if k in raw and raw[k] not in (None, ""):
                 return raw[k]
         return None
 
-    start = parse_timestamp(get("StartDate", "startDate", "Start", "start"))
-    end   = parse_timestamp(get("EndDate",   "endDate",   "End",   "end"))
-
     return {
-        "id":                  get("Id", "id", "EventId"),
-        "event_type":          get("EventType", "eventType", "Type", "type"),
-        "status":              get("Status", "status"),
-        "severity":            get("Severity", "severity"),
-        "roadway_name":        get("RoadwayName", "Roadway", "roadwayName"),
-        "direction":           get("DirectionOfTravel", "Direction", "direction",
-                                   "TravelDirection", "travelDirection"),
-        "area":                get("AreaName", "Area", "areaName"),
-        "location_description":get("LocationDescription", "Description", "locationDescription"),
-        "description":         get("Description", "description", "Comment", "comment"),
-        "lanes_affected":      get("LanesAffected", "lanesAffected", "Lanes", "LanesAffectedCount"),
-        "start_date":          start,
-        "end_date":            end,
-        # Polyline stored separately — excluded from main sheets to keep output readable
-        "_encoded_polyline":   get("EncodedPolyline", "encodedPolyline", "Polyline"),
+        "id":                    str(get("Id", "ID", "id") or ""),
+        "event_type":            get("EventType",   "Event Type",   "eventType",   "event_type"),
+        "sub_type":              get("SubType",     "Sub Type",     "subType",     "sub_type"),
+        "roadway_name":          get("RoadwayName", "Roadway Name", "roadwayName", "roadway_name"),
+        "location_description":  get("LocationDescription", "Location Description",
+                                     "locationDescription", "location_description"),
+        "direction":             get("Direction",   "direction"),
+        "severity":              get("Severity",    "severity"),
+        "start_time":            get("StartTime",   "Start Time",   "startTime",   "start_time"),
+        "end_time":              get("EndTime",     "End Time",     "endTime",     "end_time"),
+        "description":           get("Description", "description"),
+        "last_updated":          get("LastUpdated", "Last Updated", "lastUpdated"),
+        "_encoded_polyline":     get("EncodedPolyline", "Encoded Polyline",
+                                     "encodedPolyline", "encoded_polyline",
+                                     "polyline", "Polyline"),
     }
 
 
-# ─────────────────────────────────────────────
-#  UTILITY
-# ─────────────────────────────────────────────
-
-def parse_timestamp(value) -> str:
-    """Try to return a readable timestamp string from a variety of formats."""
-    if value is None:
-        return None
-    if isinstance(value, str):
-        # Already ISO-ish
-        return value.replace("T", " ").replace("Z", "").strip()
-    if isinstance(value, (int, float)):
-        # Unix epoch (milliseconds or seconds)
-        if value > 1e10:
-            value /= 1000
-        try:
-            return datetime.utcfromtimestamp(value).strftime("%Y-%m-%d %H:%M:%S")
-        except Exception:
-            return str(value)
-    return str(value)
-
-
-def to_dataframe(records: list, normaliser):
+# ── DataFrame helpers ─────────────────────────────────────────────────────────
+def to_dataframe(records: list) -> tuple:
     """
-    Returns (df_main, df_polylines).
-    df_main    — all readable columns, no polyline clutter
-    df_polylines — id + encoded_polyline, for mapping use
+    Convert a list of normalised records to a (df_main, df_polylines) tuple.
+    Columns starting with '_' are stripped from df_main and placed in df_polylines
+    (with the underscore prefix removed).
     """
     if not records:
         return pd.DataFrame(), pd.DataFrame()
 
-    rows = [normaliser(r) for r in records]
-    df = pd.DataFrame(rows)
+    df = pd.DataFrame(records)
 
-    # Split out the polyline column (prefixed with _ so it's easy to find)
     poly_cols = [c for c in df.columns if c.startswith("_")]
     main_cols = [c for c in df.columns if not c.startswith("_")]
 
     df_main = df[main_cols].copy()
-    df_main.dropna(axis=1, how="all", inplace=True)
-
-    if poly_cols and "id" in df_main.columns:
+    if poly_cols:
         df_poly = df[["id"] + poly_cols].copy()
         df_poly.columns = ["id"] + [c.lstrip("_") for c in poly_cols]
-        df_poly.dropna(subset=[c.lstrip("_") for c in poly_cols], how="all", inplace=True)
     else:
-        df_poly = pd.DataFrame()
+        df_poly = pd.DataFrame(columns=["id"])
 
     return df_main, df_poly
 
 
-# ─────────────────────────────────────────────
-#  EXPORT
-# ─────────────────────────────────────────────
+# ── KML builder ───────────────────────────────────────────────────────────────
+def build_kml(df_main: pd.DataFrame, df_poly: pd.DataFrame,
+              folder_name: str, condition_col: str) -> ET.Element:
+    """
+    Build a KML <Document> element with colour-coded LineString placemarks.
 
-def export(df_cond, df_cond_poly, df_evt, df_evt_poly):
-    from openpyxl.styles import Font, PatternFill, Alignment
-    run_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    Uses a LEFT join so segments without polylines are reported but not silently
+    dropped.  id columns are cast to str to prevent int/str type-mismatch joins.
+    """
+    doc = ET.Element("Document")
 
-    # ── CSV (main readable data only, no polylines) ───────────────
-    if not df_cond.empty:
-        df_cond.to_csv(OUT_COND_CSV, index=False, encoding="utf-8-sig")
-        print(f"  ✔  Road conditions CSV  → {OUT_COND_CSV}  ({len(df_cond)} rows)")
-    else:
-        print("  ⚠  No road condition data to export.")
+    # ── Styles ──────────────────────────────────────────────────────────────
+    all_colours = dict(CONDITION_COLOURS)
+    all_colours["__default__"] = DEFAULT_COLOUR
 
-    if not df_evt.empty:
-        df_evt.to_csv(OUT_EVT_CSV, index=False, encoding="utf-8-sig")
-        print(f"  ✔  Events CSV           → {OUT_EVT_CSV}  ({len(df_evt)} rows)")
-    else:
-        print("  ⚠  No event data to export.")
+    for cond_key, colour in all_colours.items():
+        style_id = cond_key.replace(" ", "_")
+        style = ET.SubElement(doc, "Style", id=style_id)
+        line  = ET.SubElement(style, "LineStyle")
+        ET.SubElement(line, "color").text = colour
+        ET.SubElement(line, "width").text = "4"
 
-    # ── Excel workbook (multi-sheet) ─────────────────────────────
-    with pd.ExcelWriter(OUT_EXCEL, engine="openpyxl") as writer:
+    # ── Merge ────────────────────────────────────────────────────────────────
+    if df_main.empty:
+        return doc
 
-        def write_sheet(df: pd.DataFrame, sheet_name: str, title_suffix: str = ""):
-            if df.empty:
-                pd.DataFrame({"Note": [f"No data retrieved — {run_time}"]}).to_excel(
-                    writer, sheet_name=sheet_name, index=False
-                )
-                return
-            df.to_excel(writer, sheet_name=sheet_name, index=False, startrow=1)
-            ws = writer.sheets[sheet_name]
+    dm = df_main.copy()
+    dp = df_poly.copy()
+    dm["id"] = dm["id"].astype(str)
+    dp["id"] = dp["id"].astype(str)
 
-            # Title row
-            title = f"NL 511 — {sheet_name}{title_suffix} — extracted {run_time}"
-            ws.cell(1, 1, title).font = Font(bold=True, size=12)
+    merged = dm.merge(dp, on="id", how="left")   # LEFT join — keep all segments
 
-            # Style header row (row 2)
-            header_fill = PatternFill("solid", fgColor="2E5E8E")
-            header_font = Font(bold=True, color="FFFFFF")
-            for cell in ws[2]:
-                cell.fill = header_fill
-                cell.font = header_font
-                cell.alignment = Alignment(horizontal="center")
+    # ── Folder ───────────────────────────────────────────────────────────────
+    folder = ET.SubElement(doc, "Folder")
+    ET.SubElement(folder, "name").text = folder_name
 
-            # Auto-width columns (cap at 55 chars)
-            for col_cells in ws.columns:
-                max_len = max(
-                    (len(str(cell.value or "")) for cell in col_cells),
-                    default=10
-                )
-                ws.column_dimensions[col_cells[0].column_letter].width = min(max_len + 4, 55)
+    skipped = []
 
-            ws.freeze_panes = "A3"
+    for _, row in merged.iterrows():
+        encoded = row.get("encoded_polyline", "")
+        if not encoded or str(encoded).strip() in ("", "nan", "None"):
+            skipped.append(
+                f"  id={row.get('id')} | {row.get('roadway_name', '')} "
+                f"| {row.get('location_description', '')} "
+                f"| {condition_col}={row.get(condition_col, '')}"
+            )
+            continue
 
-        write_sheet(df_cond, "Road Conditions")
-        write_sheet(df_evt,  "Events & Incidents")
+        condition = str(row.get(condition_col, "") or "").lower()
+        colour    = condition_colour(condition)
 
-        # Polyline sheets — for mapping / GIS use
-        if not df_cond_poly.empty:
-            write_sheet(df_cond_poly, "Polylines - Roads",
-                        " (map geometry — use with Google Maps or GIS)")
-        if not df_evt_poly.empty:
-            write_sheet(df_evt_poly, "Polylines - Events",
-                        " (map geometry — use with Google Maps or GIS)")
+        # Match to a style id
+        style_id = "__default__"
+        for key in CONDITION_COLOURS:
+            if key in condition:
+                style_id = key.replace(" ", "_")
+                break
 
-        # Metadata sheet
-        meta = pd.DataFrame({
-            "Field": ["Extracted at (UTC)", "Road condition rows", "Event rows",
-                      "Source — conditions", "Source — events",
-                      "Polyline note"],
-            "Value": [run_time, len(df_cond), len(df_evt),
-                      "https://511nl.ca/api/v2/get/winterroads",
-                      "https://511nl.ca/api/v2/get/events",
-                      "Encoded polylines are Google Maps format. "
-                      "Decode at: https://developers.google.com/maps/documentation/utilities/polylineutility"],
-        })
-        meta.to_excel(writer, sheet_name="Metadata", index=False)
-        ws_meta = writer.sheets["Metadata"]
-        for col_cells in ws_meta.columns:
-            ws_meta.column_dimensions[col_cells[0].column_letter].width = 70
+        coords = decode_polyline(str(encoded))
+        if not coords:
+            skipped.append(f"  id={row.get('id')} — polyline decode failed")
+            continue
 
-    print(f"  ✔  Excel workbook       → {OUT_EXCEL}")
+        pm = ET.SubElement(folder, "Placemark")
+        ET.SubElement(pm, "name").text = (
+            str(row.get("roadway_name", "")) + " — " +
+            str(row.get("location_description", ""))
+        )
+        ET.SubElement(pm, "description").text = (
+            f"{condition_col}: {row.get(condition_col, '')}\n"
+            f"Direction: {row.get('direction', '')}\n"
+            f"Last updated: {row.get('last_updated', '')}"
+        )
+        ET.SubElement(pm, "styleUrl").text = f"#{style_id}"
+
+        ls   = ET.SubElement(pm, "LineString")
+        ET.SubElement(ls, "tessellate").text = "1"
+        ET.SubElement(ls, "coordinates").text = " ".join(
+            f"{lng},{lat},0" for lat, lng in coords
+        )
+
+    if skipped:
+        print(f"\n⚠  {len(skipped)} segment(s) in '{folder_name}' skipped "
+              f"(no polyline data):")
+        for s in skipped:
+            print(s)
+
+    return doc
 
 
-# ─────────────────────────────────────────────
-#  MAIN
-# ─────────────────────────────────────────────
+def export_kml(conditions: list, events: list, path: str) -> None:
+    """Write a KML file with Road Conditions and Events folders."""
+    df_cond_main, df_cond_poly = to_dataframe(conditions)
+    df_evt_main,  df_evt_poly  = to_dataframe(events)
 
+    root = ET.Element("kml", xmlns="http://www.opengis.net/kml/2.2")
+    doc  = ET.SubElement(root, "Document")
+    ET.SubElement(doc, "name").text = (
+        f"NL511 Roads — {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}"
+    )
+
+    # Road conditions folder
+    cond_doc = build_kml(df_cond_main, df_cond_poly,
+                         "Road Conditions", "road_condition")
+    for child in list(cond_doc):
+        doc.append(child)
+
+    # Events folder
+    evt_doc = build_kml(df_evt_main, df_evt_poly,
+                        "Events & Incidents", "event_type")
+    for child in list(evt_doc):
+        doc.append(child)
+
+    xml_str = minidom.parseString(
+        ET.tostring(root, encoding="unicode")
+    ).toprettyxml(indent="  ")
+
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(xml_str)
+
+    print(f"✓  KML saved → {path}")
+
+
+# ── Excel export ──────────────────────────────────────────────────────────────
+def _style_header(ws):
+    """Apply header styling to row 1 of a worksheet."""
+    header_fill = PatternFill("solid", fgColor="1F4E79")
+    header_font = Font(bold=True, color="FFFFFF")
+    for cell in ws[1]:
+        cell.fill      = header_fill
+        cell.font      = header_font
+        cell.alignment = Alignment(horizontal="center")
+    ws.freeze_panes = "A2"
+    for col_idx, col_cells in enumerate(ws.columns, 1):
+        max_len = max((len(str(c.value or "")) for c in col_cells), default=10)
+        ws.column_dimensions[get_column_letter(col_idx)].width = min(max_len + 4, 60)
+
+
+def export(conditions: list, events: list) -> None:
+    """Write CSV and Excel files for conditions and events."""
+
+    df_cond_main, df_cond_poly = to_dataframe(conditions)
+    df_evt_main,  df_evt_poly  = to_dataframe(events)
+
+    # ── CSVs ──────────────────────────────────────────────────────────────
+    if not df_cond_main.empty:
+        df_cond_main.to_csv(OUT_CSV_CONDITIONS, index=False)
+        print(f"✓  CSV saved → {OUT_CSV_CONDITIONS}  ({len(df_cond_main)} rows)")
+
+    if not df_evt_main.empty:
+        df_evt_main.to_csv(OUT_CSV_EVENTS, index=False)
+        print(f"✓  CSV saved → {OUT_CSV_EVENTS}  ({len(df_evt_main)} rows)")
+
+    # ── Excel ─────────────────────────────────────────────────────────────
+    wb = openpyxl.Workbook()
+    wb.remove(wb.active)  # remove default sheet
+
+    def add_sheet(name, df):
+        if df.empty:
+            return
+        ws = wb.create_sheet(name)
+        # Write header
+        for col_idx, col_name in enumerate(df.columns, 1):
+            ws.cell(row=1, column=col_idx, value=col_name)
+        # Write data
+        for row_idx, row in enumerate(df.itertuples(index=False), 2):
+            for col_idx, value in enumerate(row, 1):
+                ws.cell(row=row_idx, column=col_idx, value=value)
+        _style_header(ws)
+
+    add_sheet("Road Conditions",   df_cond_main)
+    add_sheet("Events & Incidents", df_evt_main)
+    add_sheet("Road Polylines",    df_cond_poly)
+    add_sheet("Event Polylines",   df_evt_poly)
+
+    # Metadata sheet
+    ws_meta = wb.create_sheet("Metadata")
+    meta_rows = [
+        ("Generated",    datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")),
+        ("Source",       "https://511nl.ca"),
+        ("Conditions",   len(conditions)),
+        ("Events",       len(events)),
+    ]
+    for r, (k, v) in enumerate(meta_rows, 1):
+        ws_meta.cell(row=r, column=1, value=k).font = Font(bold=True)
+        ws_meta.cell(row=r, column=2, value=str(v))
+
+    wb.save(OUT_XLSX)
+    print(f"✓  Excel saved → {OUT_XLSX}")
+
+
+# ── Main ──────────────────────────────────────────────────────────────────────
 def main():
-    if API_KEY == "YOUR_API_KEY_HERE":
-        print("[ERROR] Please open nl511_extract.py and replace YOUR_API_KEY_HERE "
-              "with your actual API key from 511nl.ca")
-        sys.exit(1)
+    print("── Fetching NL511 data ──────────────────────────────────────────")
 
-    print("NL 511 Extractor — starting…\n")
-
-    # ── Fetch ────────────────────────────────
-    print("→ Fetching road conditions (winterroads)…")
+    print("Fetching winter road conditions …")
     raw_cond = fetch("winterroads")
-    print(f"   {len(raw_cond)} segment(s) received.")
+    print(f"  Got {len(raw_cond)} raw condition records")
 
-    print("→ Fetching events & incidents…")
-    raw_evt = fetch("events")
-    print(f"   {len(raw_evt)} event(s) received.\n")
+    print("Fetching events …")
+    raw_evt  = fetch("events")
+    print(f"  Got {len(raw_evt)} raw event records")
 
-    # Debug: show field names + values (excluding polyline so they're not buried)
     if raw_cond:
-        print("── Road condition fields returned by API ─────────")
+        # Debug: show first record (excluding polyline noise)
         sample = {k: v for k, v in raw_cond[0].items()
                   if "polyline" not in k.lower() and "encoded" not in k.lower()}
-        print(json.dumps(sample, indent=2, default=str))
-        print()
-    if raw_evt:
-        print("── Event fields returned by API ──────────────────")
-        sample = {k: v for k, v in raw_evt[0].items()
-                  if "polyline" not in k.lower() and "encoded" not in k.lower()}
-        print(json.dumps(sample, indent=2, default=str))
-        print()
+        print(f"\nSample condition record keys: {list(sample.keys())}")
 
-    # ── Normalise ────────────────────────────
-    df_cond, df_cond_poly = to_dataframe(raw_cond, normalise_condition)
-    df_evt,  df_evt_poly  = to_dataframe(raw_evt,  normalise_event)
+    conditions = [normalise_condition(r) for r in raw_cond]
+    events     = [normalise_event(r)     for r in raw_evt]
 
-    # ── Export ───────────────────────────────
-    print("→ Exporting…")
-    export(df_cond, df_cond_poly, df_evt, df_evt_poly)
-    export_kml(df_cond, df_cond_poly, df_evt, df_evt_poly)
+    # ── Summaries ──────────────────────────────────────────────────────────
+    if conditions:
+        df_cond, _ = to_dataframe(conditions)
+        if "road_condition" in df_cond.columns:
+            print("\nRoad condition breakdown:")
+            print(df_cond["road_condition"].value_counts().to_string())
+        if "visibility" in df_cond.columns:
+            print("\nVisibility breakdown:")
+            print(df_cond["visibility"].value_counts().to_string())
 
-    print("\nDone! Open nl511_data.xlsx to browse the data, or nl511_roads.kml in Google Earth.\n")
+    export(conditions, events)
+    export_kml(conditions, events, OUT_KML)
 
-    # ── Quick summary ────────────────────────
-    if not df_cond.empty and "road_condition" in df_cond.columns:
-        print("── Primary condition breakdown ───────────────────")
-        print(df_cond["road_condition"].value_counts().to_string())
-        print()
-    if not df_cond.empty and "visibility" in df_cond.columns:
-        print("── Visibility breakdown ──────────────────────────")
-        print(df_cond["visibility"].value_counts().to_string())
-        print()
-    if not df_evt.empty and "event_type" in df_evt.columns:
-        print("── Event type breakdown ──────────────────────────")
-        print(df_evt["event_type"].value_counts().to_string())
+    print("\n── Done ─────────────────────────────────────────────────────────")
 
 
 if __name__ == "__main__":
