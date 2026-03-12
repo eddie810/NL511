@@ -2,14 +2,12 @@
 nl511_extract.py
 Fetches road conditions and traffic events from the 511NL (511nl.ca) API,
 exports to CSV, Excel, and KML.
-
 Usage:
     python3 nl511_extract.py
-
 Dependencies:
     pip3 install requests pandas openpyxl --break-system-packages
 """
-
+import os
 import requests
 import pandas as pd
 import openpyxl
@@ -21,7 +19,7 @@ from datetime import datetime, timezone
 import sys
 
 # ── Configuration ────────────────────────────────────────────────────────────
-API_KEY   = "002e66c43dd1491abe476df3e2bf034f"          # ← replace with your 511NL API key
+API_KEY   = os.environ.get("NL511_API_KEY", "002e66c43dd1491abe476df3e2bf034f")
 BASE_URL  = "https://511nl.ca/api/v2"
 
 OUT_CSV_CONDITIONS = "nl511_road_conditions.csv"
@@ -45,7 +43,6 @@ CONDITION_COLOURS = {
 }
 DEFAULT_COLOUR = "ff888888"              # grey (No Report)
 
-
 # ── Polyline decoder ─────────────────────────────────────────────────────────
 def decode_polyline(encoded: str) -> list:
     """Decode a Google Maps encoded polyline into a list of (lat, lng) tuples."""
@@ -68,7 +65,6 @@ def decode_polyline(encoded: str) -> list:
         coords.append((lat / 1e5, lng / 1e5))
     return coords
 
-
 # ── Colour lookup ─────────────────────────────────────────────────────────────
 def condition_colour(condition: str) -> str:
     """Return the KML colour for a given condition string."""
@@ -79,7 +75,6 @@ def condition_colour(condition: str) -> str:
         if key in lower:
             return colour
     return DEFAULT_COLOUR
-
 
 # ── API fetch ─────────────────────────────────────────────────────────────────
 def fetch(endpoint: str) -> list:
@@ -106,7 +101,6 @@ def fetch(endpoint: str) -> list:
             print(f"  [{version}] Error fetching {endpoint}: {exc}")
     return []
 
-
 # ── Normalisation ─────────────────────────────────────────────────────────────
 def normalise_condition(raw: dict) -> dict:
     """Map a raw winterroads API record to a clean flat dict."""
@@ -115,6 +109,12 @@ def normalise_condition(raw: dict) -> dict:
             if k in raw and raw[k] not in (None, ""):
                 return raw[k]
         return None
+
+    def to_str(val):
+        """Convert lists to comma-separated strings for Excel compatibility."""
+        if isinstance(val, list):
+            return ", ".join(str(v) for v in val) if val else ""
+        return val
 
     return {
         "id":                    str(get("Id", "ID", "id") or ""),
@@ -127,8 +127,8 @@ def normalise_condition(raw: dict) -> dict:
         "road_condition":        get("Primary Condition", "PrimaryCondition",
                                      "Primary-Condition",  "primaryCondition",
                                      "RoadCondition",      "road_condition"),
-        "secondary_conditions":  get("Secondary Conditions", "SecondaryConditions",
-                                     "Secondary-Conditions", "secondaryConditions"),
+        "secondary_conditions":  to_str(get("Secondary Conditions", "SecondaryConditions",
+                                            "Secondary-Conditions", "secondaryConditions")),
         "visibility":            get("Visibility",  "visibility"),
         "last_updated":          get("LastUpdated", "Last Updated", "lastUpdated",
                                      "UpdatedAt",   "updatedAt"),
@@ -137,7 +137,6 @@ def normalise_condition(raw: dict) -> dict:
                                      "polyline", "Polyline"),
     }
 
-
 def normalise_event(raw: dict) -> dict:
     """Map a raw events API record to a clean flat dict."""
     def get(*keys):
@@ -145,6 +144,11 @@ def normalise_event(raw: dict) -> dict:
             if k in raw and raw[k] not in (None, ""):
                 return raw[k]
         return None
+
+    def to_str(val):
+        if isinstance(val, list):
+            return ", ".join(str(v) for v in val) if val else ""
+        return val
 
     return {
         "id":                    str(get("Id", "ID", "id") or ""),
@@ -157,13 +161,12 @@ def normalise_event(raw: dict) -> dict:
         "severity":              get("Severity",    "severity"),
         "start_time":            get("StartTime",   "Start Time",   "startTime",   "start_time"),
         "end_time":              get("EndTime",     "End Time",     "endTime",     "end_time"),
-        "description":           get("Description", "description"),
+        "description":           to_str(get("Description", "description")),
         "last_updated":          get("LastUpdated", "Last Updated", "lastUpdated"),
         "_encoded_polyline":     get("EncodedPolyline", "Encoded Polyline",
                                      "encodedPolyline", "encoded_polyline",
                                      "polyline", "Polyline"),
     }
-
 
 # ── DataFrame helpers ─────────────────────────────────────────────────────────
 def to_dataframe(records: list) -> tuple:
@@ -189,13 +192,11 @@ def to_dataframe(records: list) -> tuple:
 
     return df_main, df_poly
 
-
 # ── KML builder ───────────────────────────────────────────────────────────────
 def build_kml(df_main: pd.DataFrame, df_poly: pd.DataFrame,
               folder_name: str, condition_col: str) -> ET.Element:
     """
     Build a KML <Document> element with colour-coded LineString placemarks.
-
     Uses a LEFT join so segments without polylines are reported but not silently
     dropped.  id columns are cast to str to prevent int/str type-mismatch joins.
     """
@@ -280,7 +281,6 @@ def build_kml(df_main: pd.DataFrame, df_poly: pd.DataFrame,
 
     return doc
 
-
 def export_kml(conditions: list, events: list, path: str) -> None:
     """Write a KML file with Road Conditions and Events folders."""
     df_cond_main, df_cond_poly = to_dataframe(conditions)
@@ -313,7 +313,6 @@ def export_kml(conditions: list, events: list, path: str) -> None:
 
     print(f"✓  KML saved → {path}")
 
-
 # ── Excel export ──────────────────────────────────────────────────────────────
 def _style_header(ws):
     """Apply header styling to row 1 of a worksheet."""
@@ -327,7 +326,6 @@ def _style_header(ws):
     for col_idx, col_cells in enumerate(ws.columns, 1):
         max_len = max((len(str(c.value or "")) for c in col_cells), default=10)
         ws.column_dimensions[get_column_letter(col_idx)].width = min(max_len + 4, 60)
-
 
 def export(conditions: list, events: list) -> None:
     """Write CSV and Excel files for conditions and events."""
@@ -358,13 +356,16 @@ def export(conditions: list, events: list) -> None:
         # Write data
         for row_idx, row in enumerate(df.itertuples(index=False), 2):
             for col_idx, value in enumerate(row, 1):
+                # Convert lists/dicts to strings so openpyxl can write them
+                if isinstance(value, (list, dict)):
+                    value = ", ".join(str(v) for v in value) if value else ""
                 ws.cell(row=row_idx, column=col_idx, value=value)
         _style_header(ws)
 
-    add_sheet("Road Conditions",   df_cond_main)
+    add_sheet("Road Conditions",    df_cond_main)
     add_sheet("Events & Incidents", df_evt_main)
-    add_sheet("Road Polylines",    df_cond_poly)
-    add_sheet("Event Polylines",   df_evt_poly)
+    add_sheet("Road Polylines",     df_cond_poly)
+    add_sheet("Event Polylines",    df_evt_poly)
 
     # Metadata sheet
     ws_meta = wb.create_sheet("Metadata")
@@ -380,7 +381,6 @@ def export(conditions: list, events: list) -> None:
 
     wb.save(OUT_XLSX)
     print(f"✓  Excel saved → {OUT_XLSX}")
-
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 def main():
@@ -417,7 +417,6 @@ def main():
     export_kml(conditions, events, OUT_KML)
 
     print("\n── Done ─────────────────────────────────────────────────────────")
-
 
 if __name__ == "__main__":
     main()
