@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
   <Document>
-    <name>NL511 Roads — 2026-04-17 20:43 UTC</name>
+    <name>NL511 Roads — 2026-04-17 21:41 UTC</name>
     <Style id="closed">
       <LineStyle>
         <color>ff0000ff</color>
@@ -1756,7 +1756,7 @@ Last updated: 1776456020</description>
         <name>HWY-210 Burin Peninsula Highway — Grand Bank to Winterland</name>
         <description>road_condition: Bare Dry
 Direction: None
-Last updated: 1776457067</description>
+Last updated: 1776459000</description>
         <styleUrl>#bare_dry</styleUrl>
         <LineString>
           <tessellate>1</tessellate>
@@ -1767,7 +1767,7 @@ Last updated: 1776457067</description>
         <name>HWY-220 Grand Bank to Marystown — Grand Bank to Lord's Cove</name>
         <description>road_condition: Bare Dry
 Direction: None
-Last updated: 1776457067</description>
+Last updated: 1776459001</description>
         <styleUrl>#bare_dry</styleUrl>
         <LineString>
           <tessellate>1</tessellate>
