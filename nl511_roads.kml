@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
   <Document>
-    <name>NL511 Roads — 2026-04-18 21:35 UTC</name>
+    <name>NL511 Roads — 2026-04-18 22:35 UTC</name>
     <Style id="closed">
       <LineStyle>
         <color>ff0000ff</color>
@@ -1745,7 +1745,7 @@ Last updated: 1776542108</description>
         <name>HWY-230 Bonavista Peninsula Highway — Southern Bay to Catalina</name>
         <description>road_condition: Bare Dry
 Direction: None
-Last updated: 1776546794</description>
+Last updated: 1776548230</description>
         <styleUrl>#bare_dry</styleUrl>
         <LineString>
           <tessellate>1</tessellate>
@@ -1756,7 +1756,7 @@ Last updated: 1776546794</description>
         <name>HWY-100 Argentia Access Road — Intersection Route 101 to Placentia</name>
         <description>road_condition: Bare Dry
 Direction: None
-Last updated: 1776546800</description>
+Last updated: 1776549468</description>
         <styleUrl>#bare_dry</styleUrl>
         <LineString>
           <tessellate>1</tessellate>
@@ -1767,7 +1767,7 @@ Last updated: 1776546800</description>
         <name>HWY-101 Long Harbour Road — Intersection of Route 100 to Long Harbour</name>
         <description>road_condition: Bare Dry
 Direction: None
-Last updated: 1776546800</description>
+Last updated: 1776549468</description>
         <styleUrl>#bare_dry</styleUrl>
         <LineString>
           <tessellate>1</tessellate>
