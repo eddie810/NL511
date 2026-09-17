@@ -1,8 +1,9 @@
 name: NL511 Hourly Update
 
 on:
-  schedule:
-    - cron: '0 * * * *'
+  # Hourly schedule paused. Re-enable by uncommenting the two lines below.
+  # schedule:
+  #   - cron: '0 * * * *'
   workflow_dispatch:
 
 permissions:
